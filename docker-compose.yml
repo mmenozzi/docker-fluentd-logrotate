@@ -1,0 +1,32 @@
+version: "3.7"
+
+services:
+  caddy:
+    image: caddy
+    ports:
+      - "8000:8000"
+    volumes:
+      - $PWD/Caddyfile:/etc/caddy/Caddyfile
+      - $PWD/public:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: "{{.Name}}"
+    links:
+      - fluentd
+
+  fluentd:
+    image: fluentd
+    volumes:
+      - $PWD/fluent.conf:/fluentd/etc/fluent.conf
+      - $PWD/log:/fluentd/log
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+
+volumes:
+  caddy_data:
+  caddy_config:
