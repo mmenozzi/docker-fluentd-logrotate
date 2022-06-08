@@ -26,6 +26,16 @@ services:
     ports:
       - "24224:24224"
       - "24224:24224/udp"
+    user: "${UID}:${GID}"
+
+  logrotate:
+    image: blacklabelops/logrotate
+    volumes:
+      - $PWD/log:/var/log
+    environment:
+      LOGS_DIRECTORIES: "/var/log"
+      LOGROTATE_INTERVAL: "daily"
+    user: "${UID}:${GID}"
 
 volumes:
   caddy_data:
